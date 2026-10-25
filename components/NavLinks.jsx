@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Globe, KeyRound, LayoutGrid, Send, Settings, Shield, Users } from "lucide-react";
+import { Activity, Globe, KeyRound, LayoutGrid, Send, Settings, Shield, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // The open newsletter's pages, then the account's, which every newsletter shares.
@@ -45,6 +45,8 @@ const NEWSLETTER_ITEMS = [
 	{ href: "/", label: "Overview", icon: LayoutGrid },
 	{ href: "/campaigns", label: "Campaigns", icon: Send },
 	{ href: "/contacts", label: "Contacts", icon: Users },
+	// Custom (bubuMMMM): engagement scores (app/(app)/contacts/engagement).
+	{ href: "/contacts/engagement", label: "Engagement", icon: Activity },
 	{ href: "/newsletters", label: "Settings", icon: Settings },
 ];
 

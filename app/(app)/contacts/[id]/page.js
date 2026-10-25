@@ -35,6 +35,7 @@ import ProviderContactOptions from "@/components/ProviderContactOptions";
 import TextEmpty from "@/components/TextEmpty";
 import { Button } from "@/components/ui/button";
 import { scoped } from "@/lib/account-scope";
+import { getContactEngagement } from "@/lib/engagement";
 import { getContactTracking } from "@/lib/tracking-hits";
 import { countContactEmails, listContactEmails } from "@/lib/contact-emails";
 import { contactFieldValues } from "@/lib/contact-fields";
@@ -75,7 +76,7 @@ export default async function ContactPage({ params, searchParams }) {
 	const timeZone = resolveTimeZone(cookieStore.get(TIME_ZONE_COOKIE)?.value);
 	const limit = Math.min(MAX_EMAILS, Math.max(EMAILS_STEP, Number.parseInt(query.emails, 10) || EMAILS_STEP));
 	const fields = (account.contactFields ?? []).map(({ key, label, type }) => ({ key, label, type }));
-	const [{ emails, nextCursor }, counts, tags, segments, others, contactImport, hits] = await Promise.all([
+	const [{ emails, nextCursor }, counts, tags, segments, others, contactImport, hits, engagement] = await Promise.all([
 		listContactEmails(account, contact, { limit }),
 		countContactEmails(account, contact),
 		listContactTags(account, contact.newsletterId),
@@ -85,6 +86,7 @@ export default async function ContactPage({ params, searchParams }) {
 			.lean(),
 		contact.importId ? ContactImport.findOne(scoped(account, { _id: contact.importId })).select({ fileName: 1 }).lean() : null,
 		getContactTracking(account, contact._id).catch(() => []),
+		getContactEngagement(account, contact._id).catch(() => null),
 	]);
 
 	const name = contact.firstName || null;
@@ -278,7 +280,7 @@ export default async function ContactPage({ params, searchParams }) {
 							</div>
 						)}
 					</section>
-					<ContactTracking hits={hits} />
+					<ContactTracking hits={hits} engagement={engagement} />
 				</div>
 			</div>
 		</ProviderContactOptions>

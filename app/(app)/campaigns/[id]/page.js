@@ -2,7 +2,9 @@ import { isValidObjectId } from "mongoose";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import CampaignReport from "@/components/CampaignReport";
+import AbTestPanel from "@/components/AbTestPanel";
 import CampaignAttachments from "@/components/CampaignAttachments";
+import CampaignHeatmap from "@/components/CampaignHeatmap";
 import CampaignTracking from "@/components/CampaignTracking";
 import { getCampaignTracking } from "@/lib/tracking-hits";
 import FormCampaign from "@/components/FormCampaign";
@@ -81,7 +83,9 @@ export default async function CampaignPage({ params }) {
 				gmailShare={getGmailShare(audience)}
 				isSharedSender={isOnSharedDomain(newsletter.fromEmail, getSharedDomain())}
 			>
+				<AbTestPanel campaignId={String(campaign._id)} subjectA={campaign.subject} />
 				<CampaignTracking data={tracking} />
+				<CampaignHeatmap html={campaign.html} links={tracking?.links ?? []} recipients={campaign.stats?.recipients ?? 0} />
 				<CampaignAttachments campaignId={String(campaign._id)} readOnly />
 			</CampaignReport>
 		);
@@ -134,6 +138,7 @@ export default async function CampaignPage({ params }) {
 			tips={tips}
 		/>
 		<CampaignAttachments campaignId={String(campaign._id)} />
+		<AbTestPanel campaignId={String(campaign._id)} subjectA={campaign.subject} htmlA={campaign.html} isDraft />
 		</>
 	);
 }
