@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Globe, KeyRound, LayoutGrid, Newspaper, Send, Users } from "lucide-react";
+import { Globe, KeyRound, LayoutGrid, Newspaper, Send, Users, Settings2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function NavLinks({ onNavigate }) {
@@ -35,10 +35,11 @@ export default function NavLinks({ onNavigate }) {
 }
 
 const NAV_ITEMS = [
-	{ href: "/", label: "Overview", icon: LayoutGrid },
-	{ href: "/campaigns", label: "Campaigns", icon: Send },
+	{ href: "/", label: "Vue d’ensemble", icon: LayoutGrid },
+	{ href: "/campaigns", label: "Campagnes", icon: Send },
 	{ href: "/contacts", label: "Contacts", icon: Users },
 	{ href: "/newsletters", label: "Newsletters", icon: Newspaper },
-	{ href: "/domains", label: "Domains", icon: Globe },
-	{ href: "/api-keys", label: "API keys", icon: KeyRound },
+	{ href: "/domains", label: "Domaines", icon: Globe },
+	{ href: "/settings", label: "Configuration", icon: Settings2 },
+	{ href: "/api-keys", label: "Clés API", icon: KeyRound },
 ];

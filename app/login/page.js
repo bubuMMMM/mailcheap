@@ -3,7 +3,7 @@ import FormLogin from "@/components/FormLogin";
 import LogoMailcheap from "@/components/LogoMailcheap";
 import { getSession } from "@/lib/auth";
 
-export const metadata = { title: "Log in" };
+export const metadata = { title: "Connexion" };
 
 export default async function LoginPage({ searchParams }) {
 	if (await getSession()) redirect("/");
@@ -14,7 +14,7 @@ export default async function LoginPage({ searchParams }) {
 			<div className="w-full max-w-xs">
 				<div className="mb-8 flex flex-col items-center gap-3 text-center">
 					<LogoMailcheap className="size-10" />
-					<h1 className="text-lg font-semibold tracking-tight">Log in to Mailcheap</h1>
+					<h1 className="text-lg font-semibold tracking-tight">Connexion à Mailcheap</h1>
 				</div>
 				<FormLogin next={typeof next === "string" ? next : "/"} />
 			</div>

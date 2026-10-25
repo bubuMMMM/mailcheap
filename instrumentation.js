@@ -1,7 +1,10 @@
-import { getConfigProblems } from "./lib/config.js";
+import { getRuntimeMode } from './lib/setup.js';
 
-// Runs once when a server starts, before it takes requests. Builds skip it, so they need no secrets.
+// An unconfigured install serves its setup screen instead of failing every request.
+// The proxy blocks all backend calls until core configuration is valid; server actions
+// additionally check the mode and session in requireSession(). No credentials are logged.
 export function register() {
-	const problems = getConfigProblems();
-	if (problems.length > 0) throw new Error(`Mailcheap can't start. ${problems.join(" ")}`);
+  if (getRuntimeMode() !== 'live') {
+    console.info('[mailcheap] Setup pending: backend access is disabled until configuration is complete.');
+  }
 }

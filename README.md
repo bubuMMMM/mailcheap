@@ -1,5 +1,7 @@
 # Mailcheap
 
+> This deployment includes a guided setup at `/setup`, authenticated service diagnostics at `/settings`, and the full original application. See [Deployment readiness](docs/DEPLOYMENT-FR.md) for the configuration and verification report. Missing credentials no longer crash the server: backend routes remain closed until core settings are valid.
+
 Mailcheap is a self-hosted newsletter app on Amazon SES. Write an issue, send it to your list, publish it on the web. About $0.10 per 1,000 emails.
 
 ![Mailcheap overview](docs/screenshots/overview.webp)
@@ -93,7 +95,7 @@ Plan for about an hour, most of it waiting for DNS and for AWS to approve produc
 ### 2. Deploy
 
 1. Click **Deploy** above.
-2. Fill in `MONGODB_URI`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` (at least 12 characters) and `SESSION_SECRET` (at least 32; generate it with `openssl rand -base64 48`). With shorter ones, Mailcheap refuses to start and the logs say which one to fix.
+2. Fill in `MONGODB_URI`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` (at least 12 characters) and `SESSION_SECRET` (at least 32; generate it with `openssl rand -base64 48`). With missing or invalid core settings, Mailcheap shows `/setup` and refuses backend requests. After saving the settings and redeploying, the original application opens automatically.
 3. Open `https://<your-project>.vercel.app/login` and log in.
 
 Sending is off until you finish the next steps, so nothing can go out by mistake. On any other Node.js host: `npm ci && npm run build && npm start`, with the same variables, behind HTTPS.

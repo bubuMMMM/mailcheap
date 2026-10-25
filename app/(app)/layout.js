@@ -5,6 +5,9 @@ import NavLinks from "@/components/NavLinks";
 import NavMobile from "@/components/NavMobile";
 import { requireSession } from "@/lib/auth";
 
+// Admin data is loaded per authenticated request, never during a credentials-free build.
+export const dynamic = "force-dynamic";
+
 export default async function AppLayout({ children }) {
 	await requireSession();
 

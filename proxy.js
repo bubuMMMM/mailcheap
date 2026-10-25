@@ -1,9 +1,12 @@
+import { getSetupGate } from "@/lib/setup";
 import { NextResponse } from "next/server";
 import { getArchiveHostUrl, getArchiveSlugForHost } from "@/lib/archive-hosts";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session-token";
 
 // Reachable without a session: recipients, mail providers, AWS, QStash, and API-key clients.
 const PUBLIC_PATHS = [
+	/^\/setup$/,
+	/^\/demo$/,
 	/^\/favicon\.ico$/,
 	/^\/login$/,
 	/^\/unsubscribe$/,
@@ -35,6 +38,14 @@ function rewriteTo(request, pathname) {
 
 export async function proxy(request) {
 	const { pathname } = request.nextUrl;
+
+	const gate = getSetupGate(pathname, request.method);
+	if (gate?.type === "unavailable") {
+		return NextResponse.json({ error: "Configuration required", setup: "/setup" }, {
+			status: 503, headers: { "Cache-Control": "no-store" },
+		});
+	}
+	if (gate?.type === "redirect") return NextResponse.redirect(new URL(gate.pathname, request.url));
 
 	const archiveSlug = getArchiveSlugForHost(request.headers.get("host"));
 	if (archiveSlug) {

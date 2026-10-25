@@ -24,14 +24,14 @@ export default function FormLogin({ next }) {
 			<Input
 				name="password"
 				type="password"
-				placeholder="Password"
+				placeholder="Mot de passe"
 				autoComplete="current-password"
 				required
 				className="h-10"
 			/>
 			{state?.error && <p className="text-sm text-destructive">{state.error}</p>}
 			<Button type="submit" size="lg" disabled={isPending} className="mt-1">
-				{isPending ? <Loader2 className="animate-spin" /> : "Continue"}
+				{isPending ? <Loader2 className="animate-spin" /> : "Se connecter"}
 				{!isPending && <ArrowRight data-icon="inline-end" />}
 			</Button>
 		</form>
