@@ -11,6 +11,8 @@ const trackingHitSchema = new mongoose.Schema(
 		campaignId: { type: mongoose.Schema.Types.ObjectId, ref: "Campaign" },
 		contactId: { type: mongoose.Schema.Types.ObjectId, ref: "Contact" },
 		url: String,
+		// Which of the links to this URL (1 = first); missing for links sent before positions existed.
+		pos: Number,
 		device: String,
 		os: String,
 		client: String,

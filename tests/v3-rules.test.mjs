@@ -40,10 +40,8 @@ test("engagement: inactive needs enough sends and no recent human engagement", (
 	assert.equal(isInactive({ sendsInPeriod: 5, lastAt: null, now }), true);
 	assert.equal(isInactive({ sendsInPeriod: 5, lastAt: new Date(now - 10 * DAY), now }, { days: 30 }), false);
 });
-test("heatmap: keys ignore tracking params and trailing slashes; duplicates share", () => {
+test("heatmap: keys ignore tracking params and trailing slashes", () => {
 	assert.equal(heatKey("https://www.n0.pub/?utm_source=x"), heatKey("https://n0.pub"));
-	const heat = buildHeat(["https://a.com/x", "https://b.com", "https://a.com/x/"], [{ url: "https://a.com/x", unique: 4, total: 6 }], 40);
-	assert.deepEqual(heat.map((h) => [h.position, h.unique, h.sharedWith]), [[1, 4, 1], [2, 0, 0], [3, 4, 1]]);
-	assert.equal(heat[0].pct, 10);
-	assert.equal(heat[0].intensity, 1);
+	assert.equal(heatKey("https://a.com/x/#top"), heatKey("https://a.com/x"));
+	assert.equal(buildHeat([], []).max, 0);
 });

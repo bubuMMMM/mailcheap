@@ -6,6 +6,7 @@ import AbTestPanel from "@/components/AbTestPanel";
 import CampaignAttachments from "@/components/CampaignAttachments";
 import CampaignHeatmap from "@/components/CampaignHeatmap";
 import CampaignTracking from "@/components/CampaignTracking";
+import { getHeatmapData } from "@/lib/heatmap";
 import { getCampaignTracking } from "@/lib/tracking-hits";
 import FormCampaign from "@/components/FormCampaign";
 import { scoped } from "@/lib/account-scope";
@@ -49,13 +50,14 @@ export default async function CampaignPage({ params }) {
 	const plan = await getPlanState(account);
 
 	if (!["draft", "scheduled"].includes(campaign.status)) {
-		const [{ providers, timeline }, comparison, remainingCount, links, cookieStore, tracking] = await Promise.all([
+		const [{ providers, timeline }, comparison, remainingCount, links, cookieStore, tracking, heatmap] = await Promise.all([
 			getCampaignActivity(campaign),
 			getCampaignComparison(campaign),
 			countRemainingContacts(campaign),
 			findCampaignLinks(campaign),
 			cookies(),
 			getCampaignTracking(account, campaign._id).catch(() => null),
+			getHeatmapData(account, campaign._id).catch(() => null),
 		]);
 		// For a next step's dialog, and how a send going out reaches Gmail's readers.
 		const isGoingOut = ["sending", "paused"].includes(campaign.status);
@@ -85,7 +87,7 @@ export default async function CampaignPage({ params }) {
 			>
 				<AbTestPanel campaignId={String(campaign._id)} subjectA={campaign.subject} />
 				<CampaignTracking data={tracking} />
-				<CampaignHeatmap html={campaign.html} links={tracking?.links ?? []} recipients={campaign.stats?.recipients ?? 0} />
+				<CampaignHeatmap html={campaign.html} data={heatmap} recipients={campaign.stats?.recipients ?? 0} />
 				<CampaignAttachments campaignId={String(campaign._id)} readOnly />
 			</CampaignReport>
 		);

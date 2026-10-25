@@ -3,6 +3,7 @@ import { isBlocked } from "@/lib/account-state";
 import { readCountry } from "@/lib/countries";
 import { findTrackedMessage, recordEngagement } from "@/lib/email-events";
 import { escapeHtml } from "@/lib/render-email";
+import { readPosition } from "@/lib/link-position";
 import { readClickToken } from "@/lib/tracking";
 import { recordHit } from "@/lib/tracking-hits";
 
@@ -64,7 +65,7 @@ export async function GET(request, { params }) {
 			console.error("[tracking] Click not recorded:", error)
 		)
 	);
-	after(() => recordHit({ message, type: "click", headers: request.headers, url: link.url }));
+	after(() => recordHit({ message, type: "click", headers: request.headers, url: link.url, pos: readPosition(new URL(request.url).searchParams.get("n")) }));
 	return redirectTo(link.url);
 }
 
