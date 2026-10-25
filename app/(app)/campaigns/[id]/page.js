@@ -2,6 +2,7 @@ import { isValidObjectId } from "mongoose";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import CampaignReport from "@/components/CampaignReport";
+import CampaignAttachments from "@/components/CampaignAttachments";
 import CampaignTracking from "@/components/CampaignTracking";
 import { getCampaignTracking } from "@/lib/tracking-hits";
 import FormCampaign from "@/components/FormCampaign";
@@ -81,6 +82,7 @@ export default async function CampaignPage({ params }) {
 				isSharedSender={isOnSharedDomain(newsletter.fromEmail, getSharedDomain())}
 			>
 				<CampaignTracking data={tracking} />
+				<CampaignAttachments campaignId={String(campaign._id)} readOnly />
 			</CampaignReport>
 		);
 	}
@@ -104,6 +106,7 @@ export default async function CampaignPage({ params }) {
 	const isDomainNudgeShown = hasActiveSubscription(account) && isOwnDomainNudgeShown(domainNudge, newsletter);
 
 	return (
+		<>
 		<FormCampaign
 			campaign={serialize(campaign)}
 			newsletter={serialize(newsletter)}
@@ -130,6 +133,8 @@ export default async function CampaignPage({ params }) {
 			gmailShare={getGmailShare(audience)}
 			tips={tips}
 		/>
+		<CampaignAttachments campaignId={String(campaign._id)} />
+		</>
 	);
 }
 

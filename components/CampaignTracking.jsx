@@ -105,7 +105,7 @@ export default function CampaignTracking({ data }) {
 				<h3 className="mb-2 text-[13px] text-muted-foreground">Activité par heure</h3>
 				<Timeline points={data.timeline} />
 			</div>
-			<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+			<div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
 				<Breakdown title="Appareils" rows={data.devices} />
 				<Breakdown title="Systèmes" rows={data.os} />
 				<Breakdown title="Clients mail" rows={data.clients} />
@@ -146,7 +146,7 @@ export default function CampaignTracking({ data }) {
 									{r.type === "click" ? "Clic" : "Ouverture"}
 								</span>
 								<span className="min-w-0 flex-1 truncate">{r.email ?? "—"}</span>
-								<span className="text-xs text-muted-foreground">
+								<span className="order-last w-full truncate text-xs text-muted-foreground sm:order-none sm:w-auto">
 									{[r.client, r.device, r.country].filter(Boolean).join(" · ")}
 									{r.machine && ` · ${MACHINE_LABELS[r.machine]} (exclu)`}
 								</span>
