@@ -4,6 +4,7 @@ import { getArchiveHostUrl } from "@/lib/archive-hosts";
 import { isCloud } from "@/lib/config";
 import { resolveArchiveHost } from "@/lib/host-routing";
 import { siteExtensions } from "@/lib/site-extensions";
+import { getMissingSetup } from "@/lib/setup-required";
 
 // No route can live under an underscore folder, so this always renders the not-found page with a 404.
 const NOT_FOUND_PATH = "/_not-on-this-server";
@@ -74,6 +75,12 @@ function rewriteTo(request, pathname) {
 export async function proxy(request) {
 	const { pathname } = request.nextUrl;
 	if (pathname.startsWith(BOTID_PATH_PREFIX)) return NextResponse.next();
+	// Custom: a fresh deploy without its database or admin shows what's missing instead of failing.
+	if (getMissingSetup().length > 0 && pathname !== "/api/health") {
+		if (pathname === "/setup-required") return NextResponse.next();
+		if (pathname.startsWith("/api/")) return NextResponse.json({ error: "Setup required" }, { status: 503 });
+		return rewriteTo(request, "/setup-required");
+	}
 
 	const { isArchiveHost, slug: archiveSlug } = await resolveArchiveHost(request.headers.get("host"));
 	if (isArchiveHost) {
