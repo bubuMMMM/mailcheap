@@ -4,6 +4,7 @@ import { readCountry } from "@/lib/countries";
 import { findTrackedMessage, recordEngagement } from "@/lib/email-events";
 import { escapeHtml } from "@/lib/render-email";
 import { readClickToken } from "@/lib/tracking";
+import { recordHit } from "@/lib/tracking-hits";
 
 // A blocked account's links stop lending this domain to its emails: no redirect, no destination. Nothing keeps the
 // answer, in browsers or at the CDN, so unblocking the account brings its links back on the next click.
@@ -63,6 +64,7 @@ export async function GET(request, { params }) {
 			console.error("[tracking] Click not recorded:", error)
 		)
 	);
+	after(() => recordHit({ message, type: "click", headers: request.headers, url: link.url }));
 	return redirectTo(link.url);
 }
 

@@ -2,6 +2,8 @@ import { isValidObjectId } from "mongoose";
 import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import CampaignReport from "@/components/CampaignReport";
+import CampaignTracking from "@/components/CampaignTracking";
+import { getCampaignTracking } from "@/lib/tracking-hits";
 import FormCampaign from "@/components/FormCampaign";
 import { scoped } from "@/lib/account-scope";
 import { getAccountSendProblem, hasActiveSubscription, isBlocked } from "@/lib/account-state";
@@ -44,12 +46,13 @@ export default async function CampaignPage({ params }) {
 	const plan = await getPlanState(account);
 
 	if (!["draft", "scheduled"].includes(campaign.status)) {
-		const [{ providers, timeline }, comparison, remainingCount, links, cookieStore] = await Promise.all([
+		const [{ providers, timeline }, comparison, remainingCount, links, cookieStore, tracking] = await Promise.all([
 			getCampaignActivity(campaign),
 			getCampaignComparison(campaign),
 			countRemainingContacts(campaign),
 			findCampaignLinks(campaign),
 			cookies(),
+			getCampaignTracking(account, campaign._id).catch(() => null),
 		]);
 		// For a next step's dialog, and how a send going out reaches Gmail's readers.
 		const isGoingOut = ["sending", "paused"].includes(campaign.status);
@@ -76,7 +79,9 @@ export default async function CampaignPage({ params }) {
 				gmail={gmail}
 				gmailShare={getGmailShare(audience)}
 				isSharedSender={isOnSharedDomain(newsletter.fromEmail, getSharedDomain())}
-			/>
+			>
+				<CampaignTracking data={tracking} />
+			</CampaignReport>
 		);
 	}
 
