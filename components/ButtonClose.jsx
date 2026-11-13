@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// The cross that closes a dashboard helper, like the own-domain and inbox check notices, with room around it to tap.
+// The cross that closes a dashboard helper, like the own-domain one, with room around it to tap.
 export default function ButtonClose({ onClick, className }) {
 	return (
 		<button

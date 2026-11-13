@@ -2,12 +2,14 @@
 // to unsubscribe or put to sleep after confirming (lib/engagement.js).
 import EngagementTable from "@/components/EngagementTable";
 import { listEngagement, MAX_ROWS } from "@/lib/engagement";
-import { getSelectedNewsletter, openNewsletter } from "@/lib/selected-newsletter";
+import { requireRole, openNewsletter } from "@/lib/selected-newsletter";
+
+import { OWNER_ROLE } from "@/lib/team-rules";
 
 export const metadata = { title: "Engagement" };
 
 export default async function EngagementPage({ searchParams }) {
-	const [view, params] = await Promise.all([getSelectedNewsletter(), searchParams]);
+	const [view, params] = await Promise.all([requireRole(OWNER_ROLE), searchParams]);
 	openNewsletter(view, params.newsletter, "/contacts/engagement");
 	const { account, selected } = view;
 	const days = Math.min(365, Math.max(7, Number.parseInt(params.days, 10) || 90));
